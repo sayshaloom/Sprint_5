@@ -1,6 +1,5 @@
 from selenium.webdriver.common.by import By
 
-# локаторы для test_registration
 SIGN_IN_FROM_MAIN_PAGE_BUTTON = (By.XPATH, ".//button[text()='Войти в аккаунт']")
 AUTHORIZATION_FORM = (By.XPATH, ".//h2[text()='Вход']")
 REGISTRATION_LINK = (By.XPATH, ".//a[text()='Зарегистрироваться']")
@@ -19,9 +18,13 @@ RESET_PASSWORD_FORM = (By.XPATH, ".//h2[text()='Восстановление п�
 ORDERS_HISTORY = (By.XPATH, ".//a[@href='/account/order-history']")
 EXIT_BUTTON = (By.XPATH, ".//button[text()='Выход']")
 
-
 # локаторы для test_transition
 BUNS = (By.XPATH, ".//span[text()='Булки']")
 DRESSINGS = (By.XPATH, ".//span[text()='Соусы']")
 FILLINGS = (By.XPATH, ".//span[text()='Начинки']")
-CURRENT = (By.XPATH, ".//div[contains(@class, 'current')]")
+BUNS_DIV = (By.XPATH, ".//span[text()='Булки']/parent::div[contains(@class, 'tab_tab')]")
+DRESSINGS_DIV = (By.XPATH, ".//span[text()='Соусы']/parent::div[contains(@class, 'tab_tab')]")
+FILLINGS_DIV = (By.XPATH, ".//span[text()='Начинки']/parent::div[contains(@class, 'tab_tab')]")
+BUNS_ACTIVE = (By.XPATH, ".//span[text()='Булки']/parent::div[contains(@class, 'current')]")
+DRESSINGS_ACTIVE = (By.XPATH, ".//span[text()='Соусы']/parent::div[contains(@class, 'current')]")
+FILLINGS_ACTIVE = (By.XPATH, ".//span[text()='Начинки']/parent::div[contains(@class, 'current')]")

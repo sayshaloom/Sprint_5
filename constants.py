@@ -1,0 +1,5 @@
+url = "https://stellarburgers.education-services.ru/"
+url_auth_form_page = "https://stellarburgers.education-services.ru/login"
+name = "Робот-доставщик"
+existing_email = "beepbeep111@ya.ru"
+existing_password = "123456"

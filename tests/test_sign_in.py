@@ -1,124 +1,109 @@
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
-from tests import locators
+import locators
+import constants
 
-def test_login_from_main_page(existing_user):
-	driver = webdriver.Chrome()
-	driver.get('https://stellarburgers.education-services.ru/')
-	# находим кнопку входа на главной странице и кликаем
-	driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
+class TestSignIn:
+	def test_login_from_main_page(self, driver):
 
-	# подождали, чтобы форма авторизации появилась
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
+		# находим кнопку входа на главной странице и кликаем
+		driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
+		# подождали, чтобы форма авторизации появилась
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
 
-	# находим поля ввода и заполняем через фикстуру
-	driver.find_element(*locators.EMAIL_INPUT).send_keys(existing_user["email"])
-	driver.find_element(*locators.PASSWORD_INPUT).send_keys(existing_user["password"])	
+		# находим поля ввода и заполняем
+		driver.find_element(*locators.EMAIL_INPUT).send_keys(constants.existing_email)
+		driver.find_element(*locators.PASSWORD_INPUT).send_keys(constants.existing_password)
 
-	# находим кнопку Войти в форме авторизации и кликаем
-	driver.find_element(*locators.SIGN_IN_SUBMIT_BUTTON).click()
+		# находим кнопку Войти в форме авторизации и кликаем
+		driver.find_element(*locators.SIGN_IN_SUBMIT_BUTTON).click()
 
-	# подождали перехода на главную страницу
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.MAKE_ORDER_BUTTON)))
+		# подождали перехода на главную страницу
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.MAKE_ORDER_BUTTON)))
 
-	assert driver.current_url == 'https://stellarburgers.education-services.ru/'
+		assert driver.current_url == constants.url
 
-	driver.quit()
+	def test_sign_in_from_account(self, driver):
 
-def test_sign_in_from_account(existing_user):
-	driver = webdriver.Chrome()
-	driver.get('https://stellarburgers.education-services.ru/')
+		# находим кнопку Личный кабинет и кликаем
+		driver.find_element(*locators.ACCOUNT_BUTTON).click()
 
-	# находим кнопку Личный кабинет и кликаем
-	driver.find_element(*locators.ACCOUNT_BUTTON).click()
+		# подождали, чтобы форма авторизации появилась
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
 
-	# подождали, чтобы форма авторизации появилась
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
+		# находим поля ввода и заполняем
+		driver.find_element(*locators.EMAIL_INPUT).send_keys(constants.existing_email)
+		driver.find_element(*locators.PASSWORD_INPUT).send_keys(constants.existing_password)
 
-	# находим поля ввода и заполняем через фикстуру
-	driver.find_element(*locators.EMAIL_INPUT).send_keys(existing_user["email"])
-	driver.find_element(*locators.PASSWORD_INPUT).send_keys(existing_user["password"])	
+		# находим кнопку Войти в форме авторизации и кликаем
+		driver.find_element(*locators.SIGN_IN_SUBMIT_BUTTON).click()
 
-	# находим кнопку Войти в форме авторизации и кликаем
-	driver.find_element(*locators.SIGN_IN_SUBMIT_BUTTON).click()
+		# подождали перехода на главную страницу
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.MAKE_ORDER_BUTTON)))
 
-	# подождали перехода на главную страницу
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.MAKE_ORDER_BUTTON)))
+		assert driver.current_url == constants.url
 
-	assert driver.current_url == 'https://stellarburgers.education-services.ru/'
+	def test_sign_in_from_registration_form(self, driver):
 
-	driver.quit()
+		# находим кнопку входа на главной странице и кликаем
+		driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
 
-def test_sign_in_from_registration_form(existing_user):
-	driver = webdriver.Chrome()
-	driver.get('https://stellarburgers.education-services.ru/')
+		# подождали, чтобы форма авторизации появилась
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
 
-	# находим кнопку входа на главной странице и кликаем
-	driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
+		# находим ссылку Зарегистрироваться и кликаем
+		driver.find_element(*locators.REGISTRATION_LINK).click()
 
-	# подождали, чтобы форма авторизации появилась
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
+		# подождали чтобы форма регистрации появилась
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.REGISTRATION_FORM)))
 
-	# находим ссылку Зарегистрироваться и кликаем
-	driver.find_element(*locators.REGISTRATION_LINK).click()
+		# находим ссылку Войти и кликаем
+		driver.find_element(*locators.SIGN_IN_LINK).click()
 
-	# подождали чтобы форма регистрации появилась
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.REGISTRATION_FORM)))
+		# подождали, чтобы форма авторизации снова появилась
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
 
-	# находим ссылку Войти и кликаем
-	driver.find_element(*locators.SIGN_IN_LINK).click()
+		# находим поля ввода и заполняем
+		driver.find_element(*locators.EMAIL_INPUT).send_keys(constants.existing_email)
+		driver.find_element(*locators.PASSWORD_INPUT).send_keys(constants.existing_password)
 
-	# подождали, чтобы форма авторизации снова появилась
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
+		# находим кнопку Войти в форме авторизации и кликаем
+		driver.find_element(*locators.SIGN_IN_SUBMIT_BUTTON).click()
 
-	# находим поля ввода и заполняем через фикстуру
-	driver.find_element(*locators.EMAIL_INPUT).send_keys(existing_user["email"])
-	driver.find_element(*locators.PASSWORD_INPUT).send_keys(existing_user["password"])
+		# подождали перехода на главную страницу
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.MAKE_ORDER_BUTTON)))
 
-	# находим кнопку Войти в форме авторизации и кликаем
-	driver.find_element(*locators.SIGN_IN_SUBMIT_BUTTON).click()
+		assert driver.current_url == constants.url
 
-	# подождали перехода на главную страницу
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.MAKE_ORDER_BUTTON)))
+	def test_sign_in_from_reset_password(self, driver):
 
-	assert driver.current_url == 'https://stellarburgers.education-services.ru/'
+		# находим кнопку входа на главной странице и кликаем
+		driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
 
-	driver.quit()
-
-def test_sign_in_from_reset_password(existing_user):
-	driver = webdriver.Chrome()
-	driver.get('https://stellarburgers.education-services.ru/')
-
-	# находим кнопку входа на главной странице и кликаем
-	driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
-
-	# подождали, чтобы форма авторизации появилась
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
+		# подождали, чтобы форма авторизации появилась
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
  
-	# находим ссылку Восстановить пароль и кликаем
-	driver.find_element(*locators.FORGOR_PASSWORD_LINK).click()
+		# находим ссылку Восстановить пароль и кликаем
+		driver.find_element(*locators.FORGOR_PASSWORD_LINK).click()
 
-	# ждем появления формы восстановления пароля
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.RESET_PASSWORD_FORM)))	
+		# ждем появления формы восстановления пароля
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.RESET_PASSWORD_FORM)))	
 	
-	# находим ссылку Войти и кликаем
-	driver.find_element(*locators.SIGN_IN_LINK).click()
+		# находим ссылку Войти и кликаем
+		driver.find_element(*locators.SIGN_IN_LINK).click()
 
-    # подождали пока форма авторизации опять появилась
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
+   		# подождали пока форма авторизации опять появилась
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
 
-	# находим поля ввода и заполняем через фикстуру
-	driver.find_element(*locators.EMAIL_INPUT).send_keys(existing_user["email"])
-	driver.find_element(*locators.PASSWORD_INPUT).send_keys(existing_user["password"])
+		# находим поля ввода и заполняем
+		driver.find_element(*locators.EMAIL_INPUT).send_keys(constants.existing_email)
+		driver.find_element(*locators.PASSWORD_INPUT).send_keys(constants.existing_password)
 
-	# находим кнопку Войти в форме авторизации и кликаем
-	driver.find_element(*locators.SIGN_IN_SUBMIT_BUTTON).click()
+		# находим кнопку Войти в форме авторизации и кликаем
+		driver.find_element(*locators.SIGN_IN_SUBMIT_BUTTON).click()
 
-	# подождали перехода на главную страницу
-	WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.MAKE_ORDER_BUTTON)))
+		# подождали перехода на главную страницу
+		WebDriverWait(driver, 3).until(expected_conditions.visibility_of_element_located((locators.MAKE_ORDER_BUTTON)))
 
-	assert driver.current_url == 'https://stellarburgers.education-services.ru/'
-
-	driver.quit()
+		assert driver.current_url == constants.url

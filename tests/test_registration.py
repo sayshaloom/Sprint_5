@@ -1,58 +1,51 @@
-from selenium import webdriver
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions
-from tests import locators
+import locators
+import helpers
+import constants
 
-def test_successful_registration(user_data):
-	driver = webdriver.Chrome()
-	driver.get('https://stellarburgers.education-services.ru/')
+class TestRegistration:
+	def test_successful_registration(self, driver):
 
-	# находим кнопку входа на главной странице и кликаем
-	driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
-	# подождали, чтобы форма авторизации появилась
-	WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
+		# находим кнопку входа на главной странице и кликаем
+		driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
+		# подождали, чтобы форма авторизации появилась
+		WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
 
-	# находим ссылку регистрации и кликаем
-	driver.find_element(*locators.REGISTRATION_LINK).click()
-	# подождали, чтобы форма регистрации появилась
-	WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.REGISTRATION_FORM)))
+		# находим ссылку регистрации и кликаем
+		driver.find_element(*locators.REGISTRATION_LINK).click()
+		# подождали, чтобы форма регистрации появилась
+		WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.REGISTRATION_FORM)))
 
-	# заполняем поля ввода данными
+		# заполнили форму регистрации и кликнули кнопку Зарегистрироваться
+		driver.find_element(*locators.NAME_INPUT).send_keys(constants.name)
+		driver.find_element(*locators.EMAIL_INPUT).send_keys(helpers.generate_random_email())
+		driver.find_element(*locators.PASSWORD_INPUT).send_keys(helpers.generate_random_password())
 
-	driver.find_element(*locators.NAME_INPUT).send_keys("Робот-доставщик")
-	driver.find_element(*locators.EMAIL_INPUT).send_keys(user_data["email"])
-	driver.find_element(*locators.PASSWORD_INPUT).send_keys(user_data["password"])
+		driver.find_element(*locators.SIGN_UP_BUTTON).click()
+		# подождали, чтобы форма авторизации появилась
+		WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
 
-	driver.find_element(*locators.SIGN_UP_BUTTON).click()
-	WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
+		assert driver.current_url == constants.url_auth_form_page
 
-	assert driver.current_url == 'https://stellarburgers.education-services.ru/login'
+	def test_registration_short_password_error(self, driver):
 
-	driver.quit()
+		# находим кнопку входа на главной странице и кликаем
+		driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
+		# подождали, чтобы форма авторизации появилась
+		WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
 
+		# находим ссылку регистрации и кликаем
+		driver.find_element(*locators.REGISTRATION_LINK).click()
+		# подождали, чтобы форма регистрации появилась
+		WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.REGISTRATION_FORM)))
 
-def test_registration_short_password_error(user_data):
-	driver = webdriver.Chrome()
-	driver.get('https://stellarburgers.education-services.ru/')
+		# заполнили форму регистрации с коротким паролем и кликнули кнопку Зарегистрироваться
+		driver.find_element(*locators.NAME_INPUT).send_keys(constants.name)
+		driver.find_element(*locators.EMAIL_INPUT).send_keys(helpers.generate_random_email())
+		driver.find_element(*locators.PASSWORD_INPUT).send_keys("12345")
 
-	# находим кнопку входа на главной странице и кликаем
-	driver.find_element(*locators.SIGN_IN_FROM_MAIN_PAGE_BUTTON).click()
-	# подождали, чтобы форма авторизации появилась
-	WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.AUTHORIZATION_FORM)))
+		driver.find_element(*locators.SIGN_UP_BUTTON).click()
 
-	# находим ссылку регистрации и кликаем
-	driver.find_element(*locators.REGISTRATION_LINK).click()
-	# подождали, чтобы форма авторизации появилась
-	WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.REGISTRATION_FORM)))
-
-	driver.find_element(*locators.NAME_INPUT).send_keys("Робот-доставщик")
-	driver.find_element(*locators.EMAIL_INPUT).send_keys(user_data["email"])
-	driver.find_element(*locators.PASSWORD_INPUT).send_keys("12345")
-
-	driver.find_element(*locators.SIGN_UP_BUTTON).click()
-
-	error_message = WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located((locators.ERROR_PASSWORD)))
-
-	assert error_message.is_displayed()
-
-	driver.quit()
+		# проверка и взаимодействие с элементом-маркером успеха
+		assert WebDriverWait(driver, 5).until(expected_conditions.visibility_of_element_located(locators.ERROR_PASSWORD)).is_displayed()
